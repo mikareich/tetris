@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tetris" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="Tetris" />
+    <module name="tetris" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
