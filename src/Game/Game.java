@@ -28,7 +28,6 @@ public class Game {
 
     public void start() {
         if (status == GameStatus.RUNNING) return;
-
         status = GameStatus.RUNNING;
 
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -56,7 +55,7 @@ public class Game {
         activeBlock = newBlock;
     }
 
-    public void draw() {
+    public void clear() {
         gameCanvas.requestFocusInWindow();
         Graphics graphics = gameCanvas.getGraphics();
         int width = gameCanvas.getWidth();
@@ -73,10 +72,29 @@ public class Game {
         for (int row = 0; row <= ROWS; row++) {
             graphics.drawLine(0, row * scaleY, width, row * scaleY);
         }
+    }
+
+    private int[] getScaleFactors() {
+        int width = gameCanvas.getWidth();
+        int height = gameCanvas.getHeight();
+
+        int scaleX = width / COLS;
+        int scaleY = height / ROWS;
+
+        return new int[]{scaleX, scaleY};
+    }
+
+    public void draw() {
+        this.clear();
+
+        gameCanvas.requestFocusInWindow();
+        Graphics graphics = gameCanvas.getGraphics();
+
+        int[] scaleFactors = getScaleFactors();
 
         // draw tetris blocks
         for (Block block : blocks) {
-            block.draw(graphics, scaleX, scaleY);
+            block.draw(graphics, scaleFactors[0], scaleFactors[1]);
         }
     }
 }
