@@ -3,50 +3,53 @@ package Game;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Game {
-    public static final int ROWS = 20;
-    public static final int COLS = 20;
-    public static final int FPS = 1;
+    public static final int ROWS = 30;
+    public static final int COLS = 15;
+    public static final int FPS = 5;
     private final JPanel gameCanvas;
-    private final Timer timer = new Timer();
-    private final int speedFactor = 1;
     public Block[] blocks = {};
-    public Block activeBlock;
-    private int score;
-    private GameStatus status = GameStatus.IDLE;
+    public ActiveBlock activeBlock;
 
     public Game(JPanel gameCanvas) {
         this.gameCanvas = gameCanvas;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public void start() {
-        if (status == GameStatus.RUNNING) return;
-        status = GameStatus.RUNNING;
-
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                update();
-                draw();
-            }
-        }, 0, 1000 / FPS);
+        gameLoop.start();
     }
 
-    private void update() {
-        if (blocks.length == 0) addBlock(Shape.Random());
+    public void update() {
+        if (blocks.length == 0) addBlock(null);
 
-        activeBlock.move(0, 1, blocks);
+        if (!activeBlock.movable(0, 0, blocks)) {
+            // game over
+            System.out.println("game over");
+            gameLoop.stop();
+            return;
+        }
+
+        activeBlock.moveDown();
+        activeBlock.update();
+
+        if (!activeBlock.movable(0, 1, blocks)) {
+            // downgrade current active block
+            Collider.removeFullRows(blocks);
+            addBlock(null);
+        }
     }
 
-    public void addBlock(Shape shape) {
-        Block newBlock = new Block(shape);
+    public void addBlock(Block block) {
+        if (blocks.length > 0) blocks[blocks.length - 1] = activeBlock.copy();
+
+        ActiveBlock newBlock;
+
+        if (block == null) {
+            newBlock = new ActiveBlock(Shape.Random(), this);
+        } else {
+            newBlock = block.toActiveBlock(this);
+        }
 
         final int N = blocks.length;
         blocks = Arrays.copyOf(blocks, N + 1);
@@ -61,8 +64,12 @@ public class Game {
         int width = gameCanvas.getWidth();
         int height = gameCanvas.getHeight();
 
-        int scaleX = width / COLS;
-        int scaleY = height / ROWS;
+        graphics.clearRect(0, 0, width, height);
+
+        int[] scaleFactors = getScaleFactors();
+
+        int scaleX = scaleFactors[0];
+        int scaleY = scaleFactors[1];
 
         // draw grid
         graphics.setColor(Color.BLACK);
@@ -92,9 +99,20 @@ public class Game {
 
         int[] scaleFactors = getScaleFactors();
 
+        int scaleX = scaleFactors[0];
+        int scaleY = scaleFactors[1];
+
         // draw tetris blocks
         for (Block block : blocks) {
-            block.draw(graphics, scaleFactors[0], scaleFactors[1]);
+            block.draw(graphics, scaleX, scaleY);
         }
     }
+
+    private final GameLoop gameLoop = new GameLoop() {
+        @Override
+        public void execute() {
+            update();
+            draw();
+        }
+    };
 }

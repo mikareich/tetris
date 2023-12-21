@@ -11,10 +11,13 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/annotations-24.0.0.jar!/" />
+          <root url="jar://jnativehook-2.2.2.jar" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jnativehook-2.2.2" level="project" />
+    <orderEntry type="library" name="commons-net-3.10.0" level="project" />
   </component>
 </module>
