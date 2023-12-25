@@ -1,4 +1,4 @@
-package Game;
+package Core;
 
 public class Shape {
     private final int[] pivot;

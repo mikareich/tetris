@@ -1,11 +1,11 @@
-package Game;
+package Core;
 
 import java.awt.*;
 import java.util.UUID;
 
 public class Block {
     public final Shape shape;
-    private final Color color = Color.BLACK;
+    public final Color color = Color.BLACK;
     public int[] position = {0, 0};
     public UUID id = UUID.randomUUID();
 
@@ -23,12 +23,7 @@ public class Block {
 
     // draws block on canvas
     public void draw(Graphics graphics, int scaleX, int scaleY) {
-        graphics.setColor(color);
-        for (int[] edge : shape.getAbsoluteShape(position)) {
-            int x = edge[0] * scaleX;
-            int y = edge[1] * scaleY;
-            graphics.fillRect(x, y, scaleX, scaleY);
-        }
+
     }
 
     public void setPosition(int x, int y) {

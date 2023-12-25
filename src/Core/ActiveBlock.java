@@ -1,4 +1,4 @@
-package Game;
+package Core;
 
 public class ActiveBlock extends Block {
     private final Game game;

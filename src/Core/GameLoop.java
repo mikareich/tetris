@@ -1,4 +1,4 @@
-package Game;
+package Core;
 
 enum GameLoopStatus {
   IDLE,
@@ -8,8 +8,7 @@ enum GameLoopStatus {
 }
 
 public abstract class GameLoop {
-  public final int fps = Game.FPS;
-  public int speedFactor = 1;
+  public final int fps;
   private GameLoopStatus status = GameLoopStatus.IDLE;
   private final Runnable runnable =
       new Runnable() {
@@ -17,7 +16,7 @@ public abstract class GameLoop {
         public void run() {
           if (status == GameLoopStatus.STOPPED) return;
 
-          long deltaTime = 1000 / ((long) fps * speedFactor);
+          long deltaTime = 1000 /  fps;
 
           try {
             Thread.sleep(deltaTime);
@@ -31,7 +30,11 @@ public abstract class GameLoop {
       };
   private final Thread thread = new Thread(runnable, "GameLoop");
 
-  public abstract void execute();
+    protected GameLoop(int fps) {
+        this.fps = fps;
+    }
+
+    public abstract void execute();
 
   public void pause() {
     status = GameLoopStatus.PAUSED;

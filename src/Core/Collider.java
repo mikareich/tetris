@@ -1,4 +1,4 @@
-package Game;
+package Core;
 
 import org.apache.commons.lang3.ArrayUtils;
 
